@@ -5,17 +5,21 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    userInfo: {}
+    userInfo: {},
+    token: ''
   },
   mutations: {
-    SAVEUSER(state, userInfo) {
-      state.userInfo = userInfo
-    }
+    SAVEUSERINFO(state, info) {
+      state.userInfo = info.userInfo
+      state.token = info.token
+      localStorage.setItem('token',info.token)
+      localStorage.setItem('userInfo',JSON.stringify(info.userInfo))
+    },
   },
   actions: {
-    saveUser({commit}, userInfo) {
-      commit('SAVEUSER',userInfo)
-    }
+    saveUserInfo({commit}, info) {
+      commit('SAVEUSERINFO',info)
+    },
   },
   modules: {
   }

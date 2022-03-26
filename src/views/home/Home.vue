@@ -6,101 +6,135 @@
         <span>校园二手交易市场</span>
       </div>
       <el-input class="searchBox" placeholder="请输入商品名称" v-model="queryText">
-        <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-button slot="append" icon="el-icon-search" @click="searchGoods"></el-button>
       </el-input>
       <div class="right">
-        <router-link to="mycart" tag="span">购物车</router-link>
-        <router-link to="release" tag="span">发布商品</router-link>
-        <router-link to="login" tag="span" v-if="!isLogin">登录/注册</router-link>
-        <router-link to="login" tag="span" v-else>个人中心</router-link>
+        <router-link to="/login" tag="span" v-if="!loginState">登录/注册</router-link>
+        <div class="userinfo" v-else>
+          <router-link to="/profile" tag="div">
+            <el-avatar size="medium" :src="avatar"></el-avatar>
+            <span>Hi：{{username}}</span>
+          </router-link>
+          <span @click="logout">退出</span>
+        </div>
+        
       </div>
     </el-header>
     <el-main>
       <!-- 导航菜单 -->
       <el-menu
         class="nav_menu"
-        default-active="0">
-        <el-menu-item index="0" @click="showHome">首页</el-menu-item>
-        <el-menu-item :index="item.cate_id+''" v-for="(item,index) in goodsCates" :key="item.cate_id" @click="getCateGoods(item.cate_id,item.cate_name)">{{item.cate_name}}</el-menu-item>
+        router
+        :default-active="activePath"
+        >
+        <el-menu-item index="/home">首页</el-menu-item>
+        <el-menu-item :index="routerPath(item.cate_id,item.cate_name)" v-for="(item,index) in goodsCates" :key="item.cate_id" @click="getCateGoodsInfo()">{{item.cate_name}}</el-menu-item>
       </el-menu>
       <!-- 内容 -->
-      <div class="home-main" v-show="isShowHome">
-        <el-carousel trigger="click" height="450px">
-          <el-carousel-item v-for="item in 4" :key="item">
-            <h3 class="small">{{ item }}</h3>
-          </el-carousel-item>
-        </el-carousel>
-        <!-- 商品 -->
-        <GoodsList></GoodsList>
+      <div class="main_content">
+        <router-view></router-view>
       </div>
-      <router-view v-show="!isShowHome"></router-view>
+      
     </el-main>
   </el-container>
   </div>
 </template>
 
 <script>
-  import GoodsList from './childComps/goods/GoodsList'
+  import HomeContent from './childComps/homeContent/HomeContent'
+  import GoodsList from 'components/goods/GoodsList'
   export default {
     name: 'Home',
     components: {
-      GoodsList,
-    },
-    computed: {
-      isLogin() {
-        return localStorage.getItem('token')?true:false
-      }
+      HomeContent,
     },
     data() {
       return {
         queryText: '',
-        goodsList: [], // 商品列表数据
         goodsCates: [], // 商品分类
-        isShowHome: true, // 是否显示首页
-        userInfo: {}, // 用户信息
+        userInfo: {}, // 用户名称
+        loginState: false,
+      }
+    },
+    computed: {
+      activePath() {
+        return this.$route.path+(this.$route.query.cateId?('?cateId='+this.$route.query.cateId):'')+(this.$route.query.cateName?('&cateName='+this.$route.query.cateName):'')
+      },
+      routerPath() {
+        return function(id,title){
+          return `/goods?cateId=${id}&cateName=${title}`
+        }
+      },
+      username() {
+        return this.userInfo?.user_name
+      },
+      avatar() {
+        return this.userInfo?.avatar
       }
     },
     methods: {
-      // 获取商品
-      async getGoods() {
-        const res = await this.$http.getGoods()
-        this.goodsList = res.data
-        console.log(res)
+      // 验证token
+      async authValidate() {
+        const res = await this.$http.authValidate()
+        if (res.meta.status !== 200) {
+          window.localStorage.removeItem('token')
+          window.localStorage.removeItem('userInfo')
+          this.userInfo = {}
+          this.isLogin()
+        } else {
+          this.userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
+        }
       },
+      // 判断是否登录
+      isLogin() {
+        if (window.localStorage.getItem('token')) {
+          this.loginState = true
+        }else {
+          this.loginState = false
+        }
+      },
+      // 退出
+      logout() {
+        window.localStorage.removeItem('token')
+        window.localStorage.removeItem('userInfo')
+        this.isLogin()
+      },
+      
       // 获取商品分类
       async getGoodsCates() {
         const res = await this.$http.getGoodsCates()
         this.goodsCates = res.data
       },
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
-      },
       // 获取选择的分类的商品
-      getCateGoods(id,title) {
-        console.log(id,title);
-        this.isShowHome = false
-        this.$router.push('/goods').catch(err => err)
+      getCateGoodsInfo() {
+        this.$bus.$emit('getCateGoods')
+        this.$bus.$emit('getTitle')
       },
-      // 显示首页
-      showHome() {
-        this.isShowHome = true
+
+      // 搜索商品
+      async searchGoods() {
+        await this.$router.push({
+          path:'/goods',
+          query: {
+            queryText: this.queryText
+          }
+        }).catch(err => err)
+        await this.$bus.$emit('getGoods')
       }
     },
     created() {
-
+      // 验证token
+      if(localStorage.getItem('token')){
+        this.authValidate()
+      }
+      this.isLogin()
       // 获取商品分类
       this.getGoodsCates()
-      // 获取商品
-      this.getGoods()
     },
   }
 </script>
 
 <style lang="less" scoped>
-  
   .home-container {
     min-width: 1168px;
     background-color: #eee;
@@ -143,20 +177,45 @@
         }
       }
       .right {
-        width: 260px;
+        // width: 260px;
         display: flex;
-        color: orange;
-        span{
-          margin-right: 30px;
+        .userinfo {
+          display: flex;
+          align-items: center;
+          margin-right: 20px;
+          &>div {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+            .el-avatar {
+              margin-right: 10px;
+            }
+            span:nth-child(2) {
+              max-width: 150px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            
+          }
+          span{
+            white-space: nowrap;
+            cursor: pointer;
+            &:hover {
+              color: orange;
+            }
+          }
+        }
+        &>span {
           white-space: nowrap;
           cursor: pointer;
+          color: orange;
         }
       }
     }
     // 内容
     .el-main {
       width: 920px;
-      margin: 0 auto;
+      margin: 70px auto 0;
       padding: 0;
       overflow-y: auto;
       // 导航菜单
@@ -169,16 +228,10 @@
           left: 10px;
         }
       }
-      .home-main {
+      .main_content {
         height: 100%;
-        // 
-        .el-carousel {
-          background-color: aqua;
-        }
-        .el-carousel__item h3{
-          margin: 0;
-          text-align: center;
-        }
+        // margin-top: 70px;
+        
       }
     }
     .el-footer {

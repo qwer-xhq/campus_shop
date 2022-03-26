@@ -22,6 +22,9 @@ import {
   Upload, 
   Timeline, TimelineItem, 
   Carousel, CarouselItem, 
+  Empty, 
+  PageHeader,
+  Avatar, 
 } from 'element-ui'
 
 Vue.use(Row)
@@ -66,6 +69,9 @@ Vue.use(Timeline)
 Vue.use(TimelineItem)
 Vue.use(Carousel)
 Vue.use(CarouselItem)
+Vue.use(Empty)
+Vue.use(PageHeader)
+Vue.use(Avatar)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
 

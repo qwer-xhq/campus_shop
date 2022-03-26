@@ -16,10 +16,10 @@
             <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" v-model="loginForm.password"></el-input>
           </el-form-item>
         </el-form>
-        <div class="remeber_pwd">
+        <!-- <div class="remeber_pwd">
           <el-checkbox v-model="isRemember">记住密码</el-checkbox>
           <span class="forgot">忘记密码</span>
-        </div>
+        </div> -->
         <div class="loginBtn" @click="login">登录</div>
       </div>
       <!-- 注册 -->
@@ -109,11 +109,11 @@
           if (!valid) return console.log('error submit!')
 
           const res = await this.$http.login(this.loginForm)
-          console.log(res);
+          // console.log(res);
           if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-          this.$store.dispatch('saveUser',res.data)
+          // 保存用户信息
+          this.$store.dispatch('saveUserInfo',res.data)
           this.$message.success('登录成功')
-          localStorage.setItem('token',res.data.token)
           this.$router.push('/')
         })
       },
@@ -123,7 +123,6 @@
           if (!valid) return console.log('error submit!')
 
           const res = await this.$http.register({username:this.registerForm.username, password:this.registerForm.password})
-          console.log(res);
           if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
           this.$message.success('注册成功')
           // this.$router.push('/')
@@ -190,6 +189,7 @@
       line-height: 40px;
       font-size: 20px;
       color: white;
+      cursor: pointer;
     }
   }
   .login_form {

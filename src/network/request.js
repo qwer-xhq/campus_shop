@@ -9,12 +9,21 @@ export function request(config) {
   })
   // 请求拦截器
   http.interceptors.request.use(config => {
+    // 请求头添加 Authorization 字段
+    config.headers.Authorization = window.localStorage.getItem('token')?window.localStorage.getItem('token'):''
     return config;
   }, err => {
     console.log(err);
   })
   // 响应拦截器
   http.interceptors.response.use(res => {
+    // if(res.data.meta.status !== 200) {
+    //   Message({
+    //     message: res.data.meta.msg,
+    //     type: 'warning',
+    //     duration: 3000
+    //   })
+    // }
     return res.data
   },err => {
     console.log(err);
