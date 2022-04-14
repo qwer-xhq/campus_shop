@@ -9,7 +9,13 @@ export function request(config) {
   })
   // 请求拦截器
   http.interceptors.request.use(config => {
-    // 请求头添加 Authorization 字段
+    // 管理员请求头添加字段
+    const adminToken = window.sessionStorage.getItem('token')
+    if (adminToken) {
+      config.headers.AdminAuthorization = adminToken
+    }
+
+    // 用户请求头添加 Authorization 字段
     config.headers.Authorization = window.localStorage.getItem('token')?window.localStorage.getItem('token'):''
     return config;
   }, err => {

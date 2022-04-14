@@ -5,13 +5,13 @@
     </div>
     <el-form :model="passwordForm" :rules="passwordFormRules" ref="passwordFormRef" class="password_form" label-width="100px">
       <el-form-item label="原密码" prop="oldPassword">
-        <el-input type="password" placeholder="请输入原密码" v-model="passwordForm.oldPassword"></el-input>
+        <el-input type="password" placeholder="请输入原密码" v-model="passwordForm.oldPassword" show-password></el-input>
       </el-form-item>
       <el-form-item label="新密码" prop="newPassword">
-        <el-input type="password" placeholder="请输入新密码" v-model="passwordForm.newPassword"></el-input>
+        <el-input type="password" placeholder="请输入新密码" v-model="passwordForm.newPassword" show-password></el-input>
       </el-form-item>
       <el-form-item label="确认新密码" prop="checkNewPassword">
-        <el-input type="password" placeholder="请再次输入新密码" v-model="passwordForm.checkNewPassword"></el-input>
+        <el-input type="password" placeholder="请再次输入新密码" v-model="passwordForm.checkNewPassword" show-password></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">保存</el-button>

@@ -11,7 +11,7 @@
         <el-input placeholder="请输入商品数量" v-model.lazy.number="goodsInfoForm.goods_number"></el-input>
       </el-form-item>
       <el-form-item label="商品价格" prop="goods_price">
-        <el-input placeholder="请输入商品价格" v-model.lazy.number="goodsInfoForm.goods_price"></el-input>
+        <el-input placeholder="请输入商品价格" v-model.lazy="goodsInfoForm.goods_price"></el-input>
       </el-form-item>
       <el-form-item label="商品分类" prop="cate_id" class="goods_cate">
         <el-select v-model="goodsInfoForm.cate_id" placeholder="请选择">
@@ -128,7 +128,7 @@
       // 获取商品信息
       async getGoodsInfo() {
         const res = await this.$http.getGoodsDetail(this.goodsId)
-        if (res.meta.status !== 200) return this.$message.error('获取商品信息成功')
+        if (res.meta.status !== 200) return this.$message.error('获取商品信息失败')
         const {image,images} = res.data
         for (let item in this.goodsInfoForm) {
           this.goodsInfoForm[item] = res.data[item]

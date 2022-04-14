@@ -30,7 +30,7 @@
 
 <style lang="less" scoped>
   .goods-list {
-    
+    padding: 10px;
   }
   
   .goods-list-item {

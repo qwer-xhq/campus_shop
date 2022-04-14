@@ -13,7 +13,7 @@
             <el-input placeholder="请输入用户名" prefix-icon="el-icon-user-solid" v-model="loginForm.username"></el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" v-model="loginForm.password"></el-input>
+            <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" v-model="loginForm.password" show-password></el-input>
           </el-form-item>
         </el-form>
         <!-- <div class="remeber_pwd">
@@ -29,10 +29,10 @@
             <el-input placeholder="请输入用户名" prefix-icon="el-icon-user-solid" v-model="registerForm.username"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" v-model="registerForm.password"></el-input>
+            <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" v-model="registerForm.password" show-password></el-input>
           </el-form-item>
           <el-form-item label="确认密码" prop="checkPassword">
-            <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" v-model="registerForm.checkPassword"></el-input>
+            <el-input type="password" placeholder="请输入密码" prefix-icon="el-icon-lock" v-model="registerForm.checkPassword" show-password></el-input>
           </el-form-item>
         </el-form>
         <div class="loginBtn" @click="register">注册</div>
@@ -108,7 +108,7 @@
         this.$refs.loginFormRef.validate(async (valid,obj) => {
           if (!valid) return console.log('error submit!')
 
-          const res = await this.$http.login(this.loginForm)
+          const res = await this.$http.userLogin(this.loginForm)
           // console.log(res);
           if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
           // 保存用户信息
@@ -124,6 +124,9 @@
 
           const res = await this.$http.register({username:this.registerForm.username, password:this.registerForm.password})
           if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+          this.loginForm.username = this.registerForm.username
+          this.loginForm.password = this.registerForm.password
+          this.isLogin = true
           this.$message.success('注册成功')
           // this.$router.push('/')
         })
@@ -192,7 +195,7 @@
       cursor: pointer;
     }
   }
-  .login_form {
+  .el-form {
     padding: 0 30px;
   }
 </style>

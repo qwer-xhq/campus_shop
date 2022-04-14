@@ -4,9 +4,14 @@ import { request } from "../request";
 export function getGoods(params) {
   return request({
     url: 'goods',
-    params: {
-      queryText: params
-    }
+    params
+  })
+}
+// 管理员获取所有商品
+export function mgGetGoodsList(params) {
+  return request({
+    url: 'goods/mgGetGoodsList',
+    params
   })
 }
 

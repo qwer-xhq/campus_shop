@@ -15,27 +15,48 @@
     },
     data() {
       return {
-        goodsList: [],
         title:'', // 页头
+        // 商品查询参数
+        queryInfo: {
+          queryText: '',
+          pagenum: 1,
+          pagesize: 20,
+        },
+        cateId: '',
+        goodsList: [],
+        goodsTotal: 0,
       }
     },
     methods: {
       // 查询商品
       async getGoods() {
-        const res = await this.$http.getGoods(this.$route.query.queryText)
+        this.getQueryParams()
+        const res = await this.$http.getGoods(this.queryInfo)
         if (res.meta.status !==200)  return this.$message.console.error();('获取商品失败')
-        this.goodsList = res.data
+        this.goodsList = res.data.goods
+        this.goodsTotal = res.data.total
       },
       // 根据分类获取商品
       async getCateGoods() {
-        const res = await this.$http.getCateGoods(this.$route.query.cateId)
+        console.log('获取分类商品');
+        const res = await this.$http.getCateGoods(this.cateId)
         if (res.meta.status !==200)  return this.$message.error('获取商品失败')
         this.goodsList = res.data
       },
       // 获取标题
       getTitle() {
+        console.log('获取标题');
         this.title = this.$route.query.cateName
       },
+      // 获取查询信息
+      getQueryParams() {
+        this.queryInfo.queryText = this.$route.query.queryText
+      },
+      // 获取查询商品分类id
+      getCateId() {
+        this.cateId = this.$route.query.cateId
+      },
+      // 返回上一级
       goBack() {
         this.$router.back()
       }
@@ -44,13 +65,18 @@
       this.$bus.$on('getGoods',this.getGoods)
       this.$bus.$on('getCateGoods',this.getCateGoods)
       this.$bus.$on('getTitle',this.getTitle)
-      if(this.$route.query.hasOwnProperty('cateId')) {
-        this.getCateGoods()
-      }
+      // 获取分类名称
       if(this.$route.query.hasOwnProperty('cateName')) {
         this.getTitle()
       }
+      // 获取查询商品分类
+      if(this.$route.query.hasOwnProperty('cateId')) {
+        this.getCateId()
+        this.getCateGoods()
+      }
+      // 获取查询商品
       if(this.$route.query.hasOwnProperty('queryText')) {
+        this.getQueryParams()
         this.getGoods()
       }
       
@@ -63,7 +89,9 @@
     watch: {
       // 监听路由
       $route(to,from) {
-        this.title = to.query.cateName
+        if(to.query.hasOwnProperty('queryText')) return
+        this.getTitle()
+        this.getCateId()
         // 从新获取商品
         this.getCateGoods()
       }

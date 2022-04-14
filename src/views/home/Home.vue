@@ -28,7 +28,7 @@
         :default-active="activePath"
         >
         <el-menu-item index="/home">首页</el-menu-item>
-        <el-menu-item :index="routerPath(item.cate_id,item.cate_name)" v-for="(item,index) in goodsCates" :key="item.cate_id" @click="getCateGoodsInfo()">{{item.cate_name}}</el-menu-item>
+        <el-menu-item :index="routerPath(item.cate_id,item.cate_name)" v-for="(item,index) in goodsCates" :key="item.cate_id">{{item.cate_name}}</el-menu-item>
       </el-menu>
       <!-- 内容 -->
       <div class="main_content">
@@ -52,7 +52,7 @@
       return {
         queryText: '',
         goodsCates: [], // 商品分类
-        userInfo: {}, // 用户名称
+        userInfo: {}, // 用户信息
         loginState: false,
       }
     },
@@ -74,8 +74,8 @@
     },
     methods: {
       // 验证token
-      async authValidate() {
-        const res = await this.$http.authValidate()
+      async userAuthValidate() {
+        const res = await this.$http.userAuthValidate()
         if (res.meta.status !== 200) {
           window.localStorage.removeItem('token')
           window.localStorage.removeItem('userInfo')
@@ -106,10 +106,10 @@
         this.goodsCates = res.data
       },
       // 获取选择的分类的商品
-      getCateGoodsInfo() {
-        this.$bus.$emit('getCateGoods')
-        this.$bus.$emit('getTitle')
-      },
+      // getCateGoodsInfo() {
+      //   this.$bus.$emit('getTitle')
+      //   this.$bus.$emit('getCateGoods')
+      // },
 
       // 搜索商品
       async searchGoods() {
@@ -125,7 +125,7 @@
     created() {
       // 验证token
       if(localStorage.getItem('token')){
-        this.authValidate()
+        this.userAuthValidate()
       }
       this.isLogin()
       // 获取商品分类
@@ -224,8 +224,18 @@
         left: calc((100% - 920px)/2 - 30px - 96px);
         top: 100px;
         text-align: center;
+        .el-menu-item {
+          height: 50px;
+          line-height: 50px;
+          // border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
         @media screen and (max-width: 1200px){
           left: 10px;
+        }
+        @media screen and (max-height: 620px) {
+          height: 80%;
+          top: 70px;
+          overflow-y: auto;
         }
       }
       .main_content {

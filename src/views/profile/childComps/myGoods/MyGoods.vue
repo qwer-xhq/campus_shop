@@ -25,7 +25,7 @@
           <el-tag type="success" v-else-if="scope.row.goods_state===3">已售</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="出售状态" width="100px">
+      <el-table-column label="改为出售状态" width="120px">
         <template #default="scope">
           <el-switch
             @change="changeSellState(scope.row.goods_id)"
@@ -146,7 +146,6 @@
       },
       // 改为售卖状态
       changeSellState(id) {
-        console.log(123);
         this.$confirm('是否将商品改为已售状态?更改后不可修改！', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

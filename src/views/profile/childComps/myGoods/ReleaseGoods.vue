@@ -125,6 +125,8 @@
       async addGoods() {
         this.$refs.goodsInfoFormRef.validate(async (valid,obj) => {
           if (!valid) return console.log('error submit!')
+          if (!this.goodsInfoForm.image) return this.$message.error('请上传商品主图')
+          if (this.goodsInfoForm.images.length === 0) return this.$message.error('请上传商品其他图片')
           const res =await this.$http.addGoods(this.goodsInfoForm)
           if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
           this.$message.success('发布商品成功,正在审核中')

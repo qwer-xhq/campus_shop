@@ -160,7 +160,7 @@
       // 查询商品是否收藏
       async isCollect() {
         const res = await this.$http.isCollect(this.goodsId)
-        if(res.meta.status !== 200) return this.$message.error('收藏失败')
+        if(res.meta.status !== 200) return this.$message.error('查询是否收藏失败')
         this.isMyCollect = res.data.isCollect
       },
       // 获取商品评论
@@ -178,16 +178,16 @@
       // 收藏商品
       async collect() {
         const res = await this.$http.collect(this.goodsId)
-        if(res.meta.status !== 200) return this.$message.error('收藏失败')
-        await this.isCollect()
+        if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
         this.$message.success('收藏成功')
+        this.isMyCollect = true
       },
       // 取消收藏
       async cancelCollect() {
         const res = await this.$http.cancelCollect(this.goodsId)
         if(res.meta.status !== 200) return this.$message.error('取消收藏失败')
-        await this.isCollect()
         this.$message.info('已取消收藏')
+        this.isMyCollect = false
       },
       // 发送评论
       async sendComments() {

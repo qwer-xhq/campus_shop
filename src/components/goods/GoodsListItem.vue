@@ -30,7 +30,7 @@
 
 <style lang="less" scoped>
   .goods-item {
-    width: 215px;
+    width: 210px;
     // height: 320px;
     // border: 1px solid red;
     background-color: white;
