@@ -42,3 +42,5 @@ export function formatDate(time, fmt="yyyy-MM-dd hh:mm:ss") {
   }
   return fmt;
 };
+
+export const baseURL = "http://127.0.0.1:8000/api" 

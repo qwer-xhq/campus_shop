@@ -41,6 +41,7 @@
 </template>
 
 <script>
+  import {baseURL} from 'common/utils.js'
   export default {
     name: 'UserInfo',
     data() {
@@ -91,7 +92,7 @@
             {required: true, message: '请输入学校名', trigger: 'blur'},
           ],
         },
-        uploadURL: 'http://127.0.0.1:8000/api/upload/usersAvatar',
+        uploadURL: baseURL +'/upload/usersAvatar',
         // 上传请求的header配置
         headerObj: {
           Authorization:window.localStorage.getItem('token')

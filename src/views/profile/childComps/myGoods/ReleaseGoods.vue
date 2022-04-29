@@ -72,6 +72,7 @@
 </template>
 
 <script>
+  import {baseURL} from 'common/utils.js'
   export default {
     name: 'ReleaseGoods',
     data() {
@@ -103,7 +104,7 @@
           ],
         },
         // 图片上传地址
-        uploadURL: 'http://127.0.0.1:8000/api/upload/goodsPics',
+        uploadURL: baseURL + '/upload/goodsPics',
         // 上传请求的header配置
         headerObj: {
           Authorization:window.localStorage.getItem('token')

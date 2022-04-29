@@ -4,7 +4,7 @@ import {Message} from 'element-ui'
 export function request(config) {
   // 创建 axios 实例
   const http = axios.create({
-    baseURL: 'http://localhost:8000/api',
+    baseURL: 'http://127.0.0.1:8000/api',
     timeout: 5000
   })
   // 请求拦截器
